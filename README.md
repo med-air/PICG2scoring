@@ -36,28 +36,33 @@ python create_json.py
 
 ```
 
-## Train step one：
+### Train step one：
 ```python
 CUDA_VISIBLE_DEVICES=0 python finetune_3ch.py --data_config pretrain.yaml --batch_size 3 --epochs 20 --warmup_epochs 2 --blr 10e-4 --weight_decay 0.02 --llama_path . --output_dir prostate_pretrain --pretrained_path ckpts/7fa55208379faf2dd862565284101b0e4a2a72114d6490a95e432cf9d9b6c813_BIAS-7B.pth
 
 ```
 Then freeze the domain adapter layer
-## Train step two：
+### Train step two：
 ```python
 CUDA_VISIBLE_DEVICES=0 python finetune_3ch.py --data_config finetune.yaml --batch_size 3 --epochs 60 --warmup_epochs 5 --blr 10e-4 --weight_decay 0.02 --llama_path . --output_dir prostate_finetune --pretrained_path prostate_pretrain/checkpoint-19.pth
 
 ```
-## get the feature for distillation
+### get the feature for distillation
 ```python
 #change the path in test_round2_getfeature.py
 python test_round2_getfeature.py
 
 ```
 
-### Scoring Network
+#### Scoring Network
 
 ```python 
 cd scoring_network
 python main.py --root_path {yours} --root_test_path {yours} --used_dataset public  --batch_size 16 --n_threads 0  --loss_select multiFocal  --focalweight  2.0 2.0 1.0 1.0 1.0 --focalgamma  2   --pretrain_path /your/pretrain/r3d50_KM_200ep.pth --model_depth 50 --result_path new_feature_public_resnet50_datasample_distill_5e5_kd4 --n_classes 5 --n_epochs  200  --sample_size 256  --sample_duration 20 --train_txt_file ./data/public_train.txt --test_txt_file ./data/public_test.txt --inf_txt_file ./data/public_test.txt  --datasampler True --learning_rate 5e-5 --optimizer adam --loss_weight 0.4
 
 ```
+## Contact
+If you have any questions, please feel free to leave issues here, or contact [tiantianzhang](tiantianzhang@cuhk.edu.hk).
+
+## Citation
+Coming soon.
