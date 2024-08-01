@@ -45,7 +45,6 @@ class LLaMA_adapter(nn.Module):
         patch_size = conv1.kernel_size[0]
         self.clip.visual.conv1 = nn.Conv3d(in_channels=3, out_channels=conv1.out_channels, 
                                     kernel_size=patch_size, stride=patch_size, bias=False)
-        print("patch_size", patch_size)
         # load weights
         self.clip.visual.conv1.weight = nn.Parameter(conv1.weight[...,None].repeat(1,1,1,1,patch_size))
         # ------------

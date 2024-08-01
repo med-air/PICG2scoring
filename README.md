@@ -1,6 +1,6 @@
 # Incorporating Clinical Guidelines through Adapting Multi-modal Large Language Model for Prostate Cancer PI-RADS Scoring
 
-This is the PyTorch implemention of our paper Incorporating Clinical Guidelines through Adapting Multi-modal Large Language Model for Prostate Cancer PI-RADS Scoring by Tiantian Zhang1, Manxi Lin2, Hongda Guo, Xiaofan Zhang, Ka Fung
+This is the PyTorch implemention of our paper [paper](https://arxiv.org/pdf/2405.08786) Incorporating Clinical Guidelines through Adapting Multi-modal Large Language Model for Prostate Cancer PI-RADS Scoring by Tiantian Zhang1, Manxi Lin2, Hongda Guo, Xiaofan Zhang, Ka Fung
 Peter Chiu, Aasa Feragen, and Qi Dou
 
 ## Abstract
@@ -25,23 +25,24 @@ pip install -e .
 
 ## Dataset
 
-We use the public dataset from [here](https://www.cancerimagingarchive.net/collection/prostate-mri-us-biopsy/). The case we used and the train/val split can be found [here](https://gocuhk-my.sharepoint.com/:f:/g/personal/tiantianzhang_cuhk_edu_hk/EiRr7xgyS4NEmJmfA2wxFgMBNCCus_B3WX6t4YKbpmRVeA?e=dQcInb). Note that some cases with multiple MRI scans are excluded from our analysis because only one set of lesion mask labels is available, making it impossible to match them correctly. Additionally, we excluded cases with a PI-RADS score of 0.
+We use the public dataset from [here](https://www.cancerimagingarchive.net/collection/prostate-mri-us-biopsy/). The case we used and the train/val split can be found [here](https://gocuhk-my.sharepoint.com/:f:/g/personal/tiantianzhang_cuhk_edu_hk/EiRr7xgyS4NEmJmfA2wxFgMBNCCus_B3WX6t4YKbpmRVeA?e=dQcInb). Note that some cases with multiple MRI scans are excluded from our analysis because only one set of lesion mask labels is available, making it impossible to match them correctly. Additionally, we excluded cases with a PI-RADS score of 0. Make sure you have downloaded all the files from the website, including the csv files. We use the STL files to find the lesion and cut the lesion and surrounding tissues. We write the lesion information into this stl_record.csv [stl_record.csv](https://gocuhk-my.sharepoint.com/:x:/g/personal/tiantianzhang_cuhk_edu_hk/EYtaQSahnGJFmdp8zE9-oO8BEunpZRh8t1uGSxnbfNqeTw?e=5Odnhd)
 
-Then
+Then we need to create the instruction. please check the path in create_json_pretrain.py and create_json.py file. Put the downloaded stl_record.csv file into prostate/stl_record.csv. Put the lesion images under case_input path.
 ```
 # step one
-create_json_pretrain.py
+python create_json_pretrain.py
 # step two
 python create_json.py
 
 ```
 
 ### Train step one：
+please make sure you have uncommented the first layer conv of clip(line 108-110 in guideline_network/llama/llama_adapter_prostate.py)
 ```python
 CUDA_VISIBLE_DEVICES=0 python finetune_3ch.py --data_config pretrain.yaml --batch_size 3 --epochs 20 --warmup_epochs 2 --blr 10e-4 --weight_decay 0.02 --llama_path . --output_dir prostate_pretrain --pretrained_path ckpts/7fa55208379faf2dd862565284101b0e4a2a72114d6490a95e432cf9d9b6c813_BIAS-7B.pth
 
 ```
-Then freeze the domain adapter layer
+Then freeze the domain adapter layer (comment line 108-110 in guideline_network/llama/llama_adapter_prostate.py)
 ### Train step two：
 ```python
 CUDA_VISIBLE_DEVICES=0 python finetune_3ch.py --data_config finetune.yaml --batch_size 3 --epochs 60 --warmup_epochs 5 --blr 10e-4 --weight_decay 0.02 --llama_path . --output_dir prostate_finetune --pretrained_path prostate_pretrain/checkpoint-19.pth
@@ -54,7 +55,7 @@ python test_round2_getfeature.py
 
 ```
 
-#### Scoring Network
+#### Scoring Network (you can choose your own scoring network, we just show one example here.)
 
 ```python 
 cd scoring_network
@@ -65,4 +66,12 @@ python main.py --root_path {yours} --root_test_path {yours} --used_dataset publi
 If you have any questions, please feel free to leave issues here, or contact [tiantianzhang](tiantianzhang@cuhk.edu.hk).
 
 ## Citation
-Coming soon.
+```
+@article{zhang2024incorporating,
+  title={Incorporating Clinical Guidelines through Adapting Multi-modal Large Language Model for Prostate Cancer PI-RADS Scoring},
+  author={Zhang, Tiantian and Lin, Manxi and Guo, Hongda and Zhang, Xiaofan and Chiu, Ka Fung Peter and Feragen, Aasa and Dou, Qi},
+  journal={arXiv preprint arXiv:2405.08786},
+  year={2024}
+}
+
+```
