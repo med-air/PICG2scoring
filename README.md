@@ -1,6 +1,6 @@
 # Incorporating Clinical Guidelines through Adapting Multi-modal Large Language Model for Prostate Cancer PI-RADS Scoring
 
-This is the PyTorch implemention of our paper [paper](https://arxiv.org/pdf/2405.08786) Incorporating Clinical Guidelines through Adapting Multi-modal Large Language Model for Prostate Cancer PI-RADS Scoring by Tiantian Zhang1, Manxi Lin2, Hongda Guo, Xiaofan Zhang, Ka Fung
+This is the PyTorch implemention of our [paper](https://arxiv.org/pdf/2405.08786) Incorporating Clinical Guidelines through Adapting Multi-modal Large Language Model for Prostate Cancer PI-RADS Scoring by Tiantian Zhang1, Manxi Lin2, Hongda Guo, Xiaofan Zhang, Ka Fung
 Peter Chiu, Aasa Feragen, and Qi Dou
 
 ## Abstract
@@ -25,7 +25,7 @@ pip install -e .
 
 ## Dataset
 
-We use the public dataset from [here](https://www.cancerimagingarchive.net/collection/prostate-mri-us-biopsy/). The case we used and the train/val split can be found [here](https://gocuhk-my.sharepoint.com/:f:/g/personal/tiantianzhang_cuhk_edu_hk/EiRr7xgyS4NEmJmfA2wxFgMBNCCus_B3WX6t4YKbpmRVeA?e=dQcInb). Note that some cases with multiple MRI scans are excluded from our analysis because only one set of lesion mask labels is available, making it impossible to match them correctly. Additionally, we excluded cases with a PI-RADS score of 0. Make sure you have downloaded all the files from the website, including the csv files. We use the STL files to find the lesion and cut the lesion and surrounding tissues. We write the lesion information into this stl_record.csv [stl_record.csv](https://gocuhk-my.sharepoint.com/:x:/g/personal/tiantianzhang_cuhk_edu_hk/EYtaQSahnGJFmdp8zE9-oO8BEunpZRh8t1uGSxnbfNqeTw?e=5Odnhd)
+We use the public dataset from [here](https://www.cancerimagingarchive.net/collection/prostate-mri-us-biopsy/). The case we used and the train/val split can be found [here](https://gocuhk-my.sharepoint.com/:f:/g/personal/tiantianzhang_cuhk_edu_hk/EiRr7xgyS4NEmJmfA2wxFgMBNCCus_B3WX6t4YKbpmRVeA?e=dQcInb). Please download all the files, including the stl_record.csv. Note that some cases with multiple MRI scans are excluded from our analysis because only one set of lesion mask labels is available, making it impossible to match them correctly. Additionally, we excluded cases with a PI-RADS score of 0. Make sure you have downloaded all the files from the website, including the csv files. We use the STL files to find the lesion and cut the lesion and surrounding tissues. 
 
 Then we need to create the instruction. please check the path in create_json_pretrain.py and create_json.py file. Put the downloaded stl_record.csv file into prostate/stl_record.csv. Put the lesion images under case_input path.
 ```
