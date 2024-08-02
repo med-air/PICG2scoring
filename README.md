@@ -25,7 +25,9 @@ pip install -e .
 
 ## Dataset
 
-We use the public dataset from [here](https://www.cancerimagingarchive.net/collection/prostate-mri-us-biopsy/). The case we used and the train/val split can be found [here](https://gocuhk-my.sharepoint.com/:f:/g/personal/tiantianzhang_cuhk_edu_hk/EiRr7xgyS4NEmJmfA2wxFgMBNCCus_B3WX6t4YKbpmRVeA?e=dQcInb). Please download all the files, including the stl_record.csv. Put the `stl_record.csv` under path `prostate`.
+We use the public dataset from [here](https://www.cancerimagingarchive.net/collection/prostate-mri-us-biopsy/). Please download `Images`, `Target Data` and `STL Files`. `Target Data` is one `XLSX` file which is named as `Target Data_2019-12-05.xlsx`. 
+
+The case we used and the train/val split can be found [here](https://gocuhk-my.sharepoint.com/:f:/g/personal/tiantianzhang_cuhk_edu_hk/EiRr7xgyS4NEmJmfA2wxFgMBNCCus_B3WX6t4YKbpmRVeA?e=p85D80). Please download all the files, including the stl_record.csv. Create one file named `prostate` and put the `stl_record.csv` under path `prostate`. 
 
 Note that some cases with multiple MRI scans are excluded from our analysis because only one set of lesion mask labels is available, making it impossible to match them correctly. Additionally, we excluded cases with a PI-RADS score of 0. Make sure you have downloaded all the files from the website, including the csv files. We use the STL files to find the lesion and cut the lesion and surrounding tissues. 
 
@@ -62,7 +64,7 @@ case_input
 
 ```
 
-## Instruction
+## Create instruction
 Next, we need to create the instruction. Please check the paths in the `create_json_pretrain.py` and `create_json.py` files. Ensure the path to the `stl_record.csv` file is set to `prostate/stl_record.csv`, and place the lesion images under the `case_input` path, or choose a path of your own.
 ```
 # step one
