@@ -8,7 +8,7 @@ The Prostate Imaging Reporting and Data System (PI-RADS) is pivotal in the diagn
 
 ## Setting
 
-We follow the enveriment setting as LLaMA-adapter v2 [llama-adapter-v2](https://github.com/OpenGVLab/LLaMA-Adapter)
+We follow the enveriment setting as [LLaMA-adapter v2](https://github.com/OpenGVLab/LLaMA-Adapter)
 
 
 ```python
@@ -25,9 +25,45 @@ pip install -e .
 
 ## Dataset
 
-We use the public dataset from [here](https://www.cancerimagingarchive.net/collection/prostate-mri-us-biopsy/). The case we used and the train/val split can be found [here](https://gocuhk-my.sharepoint.com/:f:/g/personal/tiantianzhang_cuhk_edu_hk/EiRr7xgyS4NEmJmfA2wxFgMBNCCus_B3WX6t4YKbpmRVeA?e=dQcInb). Please download all the files, including the stl_record.csv. Note that some cases with multiple MRI scans are excluded from our analysis because only one set of lesion mask labels is available, making it impossible to match them correctly. Additionally, we excluded cases with a PI-RADS score of 0. Make sure you have downloaded all the files from the website, including the csv files. We use the STL files to find the lesion and cut the lesion and surrounding tissues. 
+We use the public dataset from [here](https://www.cancerimagingarchive.net/collection/prostate-mri-us-biopsy/). The case we used and the train/val split can be found [here](https://gocuhk-my.sharepoint.com/:f:/g/personal/tiantianzhang_cuhk_edu_hk/EiRr7xgyS4NEmJmfA2wxFgMBNCCus_B3WX6t4YKbpmRVeA?e=dQcInb). Please download all the files, including the stl_record.csv. Put the `stl_record.csv` under path `prostate`.
 
-Then we need to create the instruction. please check the path in create_json_pretrain.py and create_json.py file. Put the downloaded stl_record.csv file into prostate/stl_record.csv. Put the lesion images under case_input path.
+Note that some cases with multiple MRI scans are excluded from our analysis because only one set of lesion mask labels is available, making it impossible to match them correctly. Additionally, we excluded cases with a PI-RADS score of 0. Make sure you have downloaded all the files from the website, including the csv files. We use the STL files to find the lesion and cut the lesion and surrounding tissues. 
+
+The `STLs` folder contains the segmentation label for each lesion. Some of these are segmentation results from ultrasound images. Please refer to the `Target Data_2019-12-05.xlsx` to determine which segmentation files correspond to MRI. After obtaining the mask for each lesion, we draw the bounding box of the mask and expand the box to twice its original size (with the mask in the center of the box). We then extract the region within the box on T2W, ADC, and DWI modality images. We will save the cropped images in the `nii.gz` format, with each case stored in a separate folder, such as `Prostate-MRI-US-Biopsy-0001`:
+
+```
+Prostate-MRI-US-Biopsy-0001
+├── Prostate-MRI-US-Biopsy-0001_ADC_Target1.nii.gz
+├── Prostate-MRI-US-Biopsy-0001_DWI_Target1.nii.gz
+└── Prostate-MRI-US-Biopsy-0001_T2W_Target1.nii.gz
+
+```
+All cases need to be placed under the `case_input` path, or a path of your own choosing; for example:
+
+```
+case_input
+├── Prostate-MRI-US-Biopsy-0001
+│   ├── Prostate-MRI-US-Biopsy-0001_ADC_Target1.nii.gz
+│   ├── Prostate-MRI-US-Biopsy-0001_DWI_Target1.nii.gz
+│   └── Prostate-MRI-US-Biopsy-0001_T2W_Target1.nii.gz
+├── Prostate-MRI-US-Biopsy-0003
+│   ├── Prostate-MRI-US-Biopsy-0003_ADC_Target1.nii.gz
+│   ├── Prostate-MRI-US-Biopsy-0003_DWI_Target1.nii.gz
+│   └── Prostate-MRI-US-Biopsy-0003_T2W_Target1.nii.gz
+├── Prostate-MRI-US-Biopsy-0005
+│   ├── Prostate-MRI-US-Biopsy-0005_ADC_Target1.nii.gz
+│   ├── Prostate-MRI-US-Biopsy-0005_DWI_Target1.nii.gz
+│   └── Prostate-MRI-US-Biopsy-0005_T2W_Target1.nii.gz
+├── Prostate-MRI-US-Biopsy-0006
+│   ├── Prostate-MRI-US-Biopsy-0006_ADC_Target1.nii.gz
+│   ├── Prostate-MRI-US-Biopsy-0006_DWI_Target1.nii.gz
+│   └── Prostate-MRI-US-Biopsy-0006_T2W_Target1.nii.gz
+...
+
+```
+
+## Instruction
+Next, we need to create the instruction. Please check the paths in the `create_json_pretrain.py` and `create_json.py` files. Ensure the path to the `stl_record.csv` file is set to `prostate/stl_record.csv`, and place the lesion images under the `case_input` path, or choose a path of your own.
 ```
 # step one
 python create_json_pretrain.py
